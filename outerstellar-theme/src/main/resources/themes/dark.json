@@ -1,0 +1,29 @@
+{
+  "colors": {
+    "background": {
+      "base": "#1a1a2e",
+      "hover": "#16213e",
+      "pressed": "#0f0f1a"
+    },
+    "surface": {
+      "base": "#16213e",
+      "hover": "#1f3460",
+      "pressed": "#0f1628"
+    },
+    "primary": {
+      "base": "#e94560",
+      "hover": "#ff6b8a",
+      "pressed": "#c73a52"
+    },
+    "text": {
+      "base": "#eaeaea",
+      "hover": "#ffffff",
+      "pressed": "#cccccc"
+    },
+    "border": {
+      "base": "#2d3a4f",
+      "hover": "#3d4a5f",
+      "pressed": "#1d2a3f"
+    }
+  }
+}

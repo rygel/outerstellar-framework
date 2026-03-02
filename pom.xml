@@ -6,7 +6,7 @@
 
     <groupId>com.outerstellar</groupId>
     <artifactId>outerstellar-bom</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
 
     <name>Outerstellar Framework</name>
@@ -17,9 +17,13 @@
         <module>outerstellar-theme</module>
         <module>outerstellar-plugin</module>
         <module>outerstellar-exposed-plugin</module>
+        <module>outerstellar-i18n-validator</module>
+        <module>outerstellar-world-cities</module>
+        <module>outerstellar-auth</module>
     </modules>
 
     <properties>
+        <outerstellar.version>1.0.0</outerstellar.version>
         <kotlin.version>2.0.21</kotlin.version>
         <jackson.version>2.18.2</jackson.version>
         <junit.version>5.11.3</junit.version>
@@ -28,9 +32,23 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>github-rygel</id>
+            <name>GitHub Packages - rygel/outerstellar-framework</name>
+            <url>https://maven.pkg.github.com/rygel/outerstellar-framework</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <distributionManagement>
         <repository>
-            <id>github</id>
+            <id>github-rygel</id>
             <name>GitHub Packages</name>
             <url>https://maven.pkg.github.com/rygel/outerstellar-framework</url>
         </repository>
@@ -42,22 +60,32 @@
             <dependency>
                 <groupId>com.outerstellar</groupId>
                 <artifactId>outerstellar-i18n</artifactId>
-                <version>${project.version}</version>
+                <version>${outerstellar.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.outerstellar</groupId>
                 <artifactId>outerstellar-theme</artifactId>
-                <version>${project.version}</version>
+                <version>${outerstellar.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.outerstellar</groupId>
                 <artifactId>outerstellar-plugin</artifactId>
-                <version>${project.version}</version>
+                <version>${outerstellar.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.outerstellar</groupId>
                 <artifactId>outerstellar-exposed-plugin</artifactId>
-                <version>${project.version}</version>
+                <version>${outerstellar.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.outerstellar</groupId>
+                <artifactId>outerstellar-i18n-validator</artifactId>
+                <version>${outerstellar.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.outerstellar</groupId>
+                <artifactId>outerstellar-auth</artifactId>
+                <version>${outerstellar.version}</version>
             </dependency>
 
             <!-- Kotlin -->

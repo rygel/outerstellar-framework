@@ -1,0 +1,44 @@
+{
+  "colors": {
+    "background": {
+      "base": "#282a36",
+      "hover": "#5b5d69",
+      "pressed": "#000003"
+    },
+    "surface": {
+      "base": "#373844",
+      "hover": "#6a6b77",
+      "pressed": "#040511"
+    },
+    "primary": {
+      "base": "#bd93f9",
+      "hover": "#f0c6ff",
+      "pressed": "#8a60c6"
+    },
+    "text": {
+      "base": "#f8f8f2",
+      "hover": "#ffffff",
+      "pressed": "#c5c5bf"
+    },
+    "border": {
+      "base": "#44475a",
+      "hover": "#777a8d",
+      "pressed": "#111427"
+    },
+    "success": {
+      "base": "#50fa7b",
+      "hover": "#83ffae",
+      "pressed": "#1dc748"
+    },
+    "warning": {
+      "base": "#f1fa8c",
+      "hover": "#ffffbf",
+      "pressed": "#bec759"
+    },
+    "danger": {
+      "base": "#ff5555",
+      "hover": "#ff8888",
+      "pressed": "#cc2222"
+    }
+  }
+}

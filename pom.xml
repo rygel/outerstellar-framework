@@ -6,7 +6,7 @@
 
     <groupId>com.outerstellar</groupId>
     <artifactId>outerstellar-bom</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>pom</packaging>
 
     <name>Outerstellar Framework</name>
@@ -23,7 +23,7 @@
     </modules>
 
     <properties>
-        <outerstellar.version>1.0.0</outerstellar.version>
+        <outerstellar.version>1.0.1</outerstellar.version>
         <kotlin.version>2.0.21</kotlin.version>
         <jackson.version>2.18.2</jackson.version>
         <junit.version>5.11.3</junit.version>

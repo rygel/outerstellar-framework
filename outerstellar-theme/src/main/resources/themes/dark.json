@@ -1,29 +1,44 @@
 {
   "colors": {
     "background": {
-      "base": "#1a1a2e",
-      "hover": "#16213e",
-      "pressed": "#0f0f1a"
+      "base": "#1e1e1e",
+      "hover": "#515151",
+      "pressed": "#000000"
     },
     "surface": {
-      "base": "#16213e",
-      "hover": "#1f3460",
-      "pressed": "#0f1628"
+      "base": "#252526",
+      "hover": "#585859",
+      "pressed": "#000000"
     },
     "primary": {
-      "base": "#e94560",
-      "hover": "#ff6b8a",
-      "pressed": "#c73a52"
+      "base": "#007acc",
+      "hover": "#33adff",
+      "pressed": "#004799"
     },
     "text": {
-      "base": "#eaeaea",
+      "base": "#e0e0e0",
       "hover": "#ffffff",
-      "pressed": "#cccccc"
+      "pressed": "#adadad"
     },
     "border": {
-      "base": "#2d3a4f",
-      "hover": "#3d4a5f",
-      "pressed": "#1d2a3f"
+      "base": "#3e3e42",
+      "hover": "#717175",
+      "pressed": "#0b0b0f"
+    },
+    "success": {
+      "base": "#4ec9b0",
+      "hover": "#81fce3",
+      "pressed": "#1b967d"
+    },
+    "warning": {
+      "base": "#cca700",
+      "hover": "#ffda33",
+      "pressed": "#997400"
+    },
+    "danger": {
+      "base": "#f14c4c",
+      "hover": "#ff7f7f",
+      "pressed": "#be1919"
     }
   }
 }

@@ -153,6 +153,18 @@ class ThemeService private constructor(
         return sb.toString()
     }
 
+    fun toCssForSelector(selector: String): String {
+        val sb = StringBuilder()
+        sb.appendLine("$selector {")
+        themeColors.colors.forEach { (name, scheme) ->
+            sb.appendLine("  --color-$name: ${scheme.base};")
+            sb.appendLine("  --color-$name-hover: ${scheme.hover};")
+            sb.appendLine("  --color-$name-pressed: ${scheme.pressed};")
+        }
+        sb.appendLine("}")
+        return sb.toString()
+    }
+
     fun toCssVariablesWithComputed(baseColors: Map<String, String>): String {
         val sb = StringBuilder()
         sb.appendLine(":root {")

@@ -1,0 +1,44 @@
+build:
+  maxIssues: 0
+  excludeCorrectable: true
+
+complexity:
+  CyclomaticComplexMethod:
+    threshold: 15
+  LongMethod:
+    threshold: 60
+  LongParameterList:
+    functionThreshold: 6
+    constructorThreshold: 8
+  NestedBlockDepth:
+    threshold: 4
+  TooManyFunctions:
+    thresholdInFiles: 15
+    thresholdInClasses: 15
+
+formatting:
+  MaximumLineLength:
+    maxLineLength: 120
+  NoWildcardImports:
+    active: true
+  NoUnusedImports:
+    active: true
+  ImportOrdering:
+    active: true
+
+style:
+  MagicNumber:
+    active: true
+    ignoreNumbers:
+      - '-1'
+      - '0'
+      - '1'
+      - '2'
+    ignoreHashCodeFunction: true
+    ignorePropertyDeclaration: true
+    ignoreConstantDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreAnnotation: true
+    ignoreEnums: true
+  ReturnCount:
+    max: 3

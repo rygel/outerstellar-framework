@@ -35,28 +35,28 @@
     <properties>
         <outerstellar.version>1.0.3</outerstellar.version>
         <kotlin.version>2.0.21</kotlin.version>
-        <jackson.version>2.19.1</jackson.version>
+        <jackson.version>2.21.1</jackson.version>
         <junit.version>5.12.2</junit.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <hikaricp.version>6.2.1</hikaricp.version>
-        <jdbi.version>3.49.0</jdbi.version>
+        <hikaricp.version>7.0.2</hikaricp.version>
+        <jdbi.version>3.51.0</jdbi.version>
         <h2.version>2.4.240</h2.version>
-        <flatlaf.version>3.6</flatlaf.version>
+        <flatlaf.version>3.7.1</flatlaf.version>
         <assertj.version>3.27.3</assertj.version>
-        <sqlite.jdbc.version>3.49.1.0</sqlite.jdbc.version>
+        <sqlite.jdbc.version>3.51.3.0</sqlite.jdbc.version>
         <maven.compiler.release>21</maven.compiler.release>
         <maven.clean.plugin.version>3.5.0</maven.clean.plugin.version>
         <maven.install.plugin.version>3.1.4</maven.install.plugin.version>
         <maven.site.plugin.version>3.21.0</maven.site.plugin.version>
-        <maven.jar.plugin.version>3.4.2</maven.jar.plugin.version>
-        <maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
+        <maven.jar.plugin.version>3.5.0</maven.jar.plugin.version>
+        <maven.resources.plugin.version>3.5.0</maven.resources.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jacoco.version>0.8.14</jacoco.version>
-        <maven.compiler.plugin.version>3.14.0</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
         <maven.deploy.plugin.version>3.1.4</maven.deploy.plugin.version>
-        <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
-        <maven.javadoc.plugin.version>3.11.2</maven.javadoc.plugin.version>
-        <maven.surefire.plugin.version>3.5.3</maven.surefire.plugin.version>
+        <maven.source.plugin.version>3.4.0</maven.source.plugin.version>
+        <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
+        <maven.surefire.plugin.version>3.5.5</maven.surefire.plugin.version>
         <maven.plugin.api.version>3.9.9</maven.plugin.api.version>
         <maven.plugin.annotations.version>3.15.1</maven.plugin.annotations.version>
         <maven.plugin.plugin.version>3.15.1</maven.plugin.plugin.version>
@@ -283,7 +283,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>12.1.1</version>
+                    <version>12.2.0</version>
                     <configuration>
                         <failBuildOnCVSS>7</failBuildOnCVSS>
                         <skipProvidedScope>true</skipProvidedScope>

@@ -6,9 +6,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>de.outerstellar</groupId>
+        <groupId>io.github.rygel</groupId>
         <artifactId>outerstellar-bom</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
         <relativePath>..</relativePath>
     </parent>
 
@@ -18,7 +18,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.outerstellar</groupId>
+            <groupId>io.github.rygel</groupId>
             <artifactId>outerstellar-i18n-validator</artifactId>
             <version>${outerstellar.version}</version>
         </dependency>
@@ -35,7 +35,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
-                    <mainClass>de.outerstellar.i18n.gui.App</mainClass>
+                    <mainClass>io.github.rygel.outerstellar.i18n.gui.App</mainClass>
                 </configuration>
             </plugin>
         </plugins>

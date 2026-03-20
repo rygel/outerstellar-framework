@@ -6,7 +6,7 @@
         </encoder>
     </appender>
 
-    <logger name="de.outerstellar.world" level="INFO"/>
+    <logger name="io.github.rygel.outerstellar.world" level="INFO"/>
     <logger name="com.zaxxer.hikari" level="WARN"/>
 
     <root level="INFO">

@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>de.outerstellar</groupId>
+        <groupId>io.github.rygel</groupId>
         <artifactId>outerstellar-bom</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
         <relativePath>..</relativePath>
     </parent>
 
@@ -21,7 +21,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.outerstellar</groupId>
+            <groupId>io.github.rygel</groupId>
             <artifactId>outerstellar-i18n-validator</artifactId>
             <version>${outerstellar.version}</version>
         </dependency>
@@ -36,7 +36,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>de.outerstellar.i18n.cli.Main</mainClass>
+                            <mainClass>io.github.rygel.outerstellar.i18n.cli.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -52,7 +52,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>de.outerstellar.i18n.cli.Main</mainClass>
+                                    <mainClass>io.github.rygel.outerstellar.i18n.cli.Main</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

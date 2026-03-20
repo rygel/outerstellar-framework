@@ -37,15 +37,15 @@ Then add the modules you need:
 
 ```xml
 <dependency>
-    <groupId>de.outerstellar</groupId>
+    <groupId>io.github.rygel</groupId>
     <artifactId>outerstellar-i18n</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 
 <dependency>
-    <groupId>de.outerstellar</groupId>
+    <groupId>io.github.rygel</groupId>
     <artifactId>outerstellar-theme</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 

@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>outerstellar-bom</artifactId>
-    <groupId>de.outerstellar</groupId>
-    <version>1.0.2</version>
+    <groupId>io.github.rygel</groupId>
+    <version>1.0.3</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>outerstellar-i18n-validator-cli</artifactId>
@@ -17,7 +17,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>de.outerstellar.i18n.cli.Main</mainClass>
+              <mainClass>io.github.rygel.outerstellar.i18n.cli.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -34,7 +34,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>de.outerstellar.i18n.cli.Main</mainClass>
+                  <mainClass>io.github.rygel.outerstellar.i18n.cli.Main</mainClass>
                 </transformer>
               </transformers>
             </configuration>

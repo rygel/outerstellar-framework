@@ -269,7 +269,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <config>${maven.multiModuleProjectDirectory}/detekt.yml</config>
+                        <config>${maven.multiModuleProjectDirectory}/config/detekt.yml</config>
                         <buildUponDefaultConfig>true</buildUponDefaultConfig>
                     </configuration>
                     <dependencies>

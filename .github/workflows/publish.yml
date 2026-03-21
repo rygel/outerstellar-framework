@@ -26,6 +26,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
+          server-id: github-rygel
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and test
         run: mvn clean verify

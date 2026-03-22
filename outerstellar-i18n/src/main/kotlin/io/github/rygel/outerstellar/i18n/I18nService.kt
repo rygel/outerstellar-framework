@@ -7,12 +7,14 @@ import java.util.MissingResourceException
 import java.util.PropertyResourceBundle
 import java.util.ResourceBundle
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
 
 class I18nService private constructor(
     private val baseName: String,
     private val classLoader: ClassLoader,
 ) {
     private val bundleCache = ConcurrentHashMap<String, ResourceBundle>()
+    private val listeners = CopyOnWriteArrayList<Translatable>()
     @Volatile private var currentLocale: Locale = Locale.getDefault()
 
     companion object {
@@ -42,9 +44,24 @@ class I18nService private constructor(
     fun setLocale(locale: Locale) {
         currentLocale = locale
         bundleCache.clear()
+        notifyListeners()
     }
 
     fun getLocale(): Locale = currentLocale
+
+    /** Registers a [Translatable] listener that will be notified when the locale changes. */
+    fun addListener(listener: Translatable) {
+        if (listener !in listeners) listeners.add(listener)
+    }
+
+    /** Removes a previously registered [Translatable] listener. */
+    fun removeListener(listener: Translatable) {
+        listeners.remove(listener)
+    }
+
+    private fun notifyListeners() {
+        listeners.forEach { it.updateTexts() }
+    }
 
     private fun getBundle(): ResourceBundle {
         val key = "${currentLocale.toString()}_$baseName"

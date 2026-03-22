@@ -3,7 +3,7 @@
   <parent>
     <artifactId>outerstellar-bom</artifactId>
     <groupId>io.github.rygel</groupId>
-    <version>1.0.3</version>
+    <version>1.0.5</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>outerstellar-i18n-validator-cli</artifactId>
@@ -13,7 +13,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.4.2</version>
+        <version>3.5.0</version>
         <configuration>
           <archive>
             <manifest>
@@ -24,7 +24,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>3.6.2</version>
         <executions>
           <execution>
             <phase>package</phase>

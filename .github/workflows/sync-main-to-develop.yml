@@ -13,13 +13,11 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GH_PACKAGES_TOKEN }}
-          persist-credentials: false
 
       - name: Merge main into develop
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin "https://x-access-token:${{ secrets.GH_PACKAGES_TOKEN }}@github.com/${{ github.repository }}.git"
           git checkout develop
           git merge main --no-edit
           git push origin develop

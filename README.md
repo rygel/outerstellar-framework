@@ -9,7 +9,7 @@ Headless, framework-agnostic Kotlin utilities for modern JVM development.
 
 | Module | Description |
 |--------|-------------|
-| **outerstellar-i18n** | Hot-reloading translation service with Spring-style parameter replacement and locale-based ResourceBundle caching |
+| **outerstellar-i18n** | Hot-reloading translation service with Spring-style parameter replacement, locale-based ResourceBundle caching, `Translatable` listener pattern, and `Language` registry |
 | **outerstellar-theme** | JSON-based color parsing engine with smart shading, CSS variable generation, and multi-source theme loading |
 | **outerstellar-plugin** | SPI extension engine for runtime plugin discovery, lifecycle management, and caching via ServiceLoader |
 | **outerstellar-i18n-validator** | i18n validation engine — detects missing translations, unused keys, and undefined keys in source code |
@@ -39,13 +39,13 @@ Then add the modules you need:
 <dependency>
     <groupId>io.github.rygel</groupId>
     <artifactId>outerstellar-i18n</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.5</version>
 </dependency>
 
 <dependency>
     <groupId>io.github.rygel</groupId>
     <artifactId>outerstellar-theme</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 
@@ -56,6 +56,14 @@ Then add the modules you need:
 ```kotlin
 val i18n = I18nService.create("messages") // loads messages.properties
 val greeting = i18n.translate("welcome.message", userName)
+
+// Listener pattern — UI components update automatically on locale change
+i18n.addListener(Translatable { myLabel.text = i18n.translate("label.key") })
+i18n.setLocale(Locale.GERMAN) // all listeners notified
+
+// Language registry
+val languages = Language.availableLanguages() // [English, Deutsch, Français]
+val german = Language.forLocale(Locale.GERMAN) // Language("Deutsch", Locale.GERMAN, "Deutsch")
 ```
 
 ### Theme

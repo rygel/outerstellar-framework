@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   sync:
@@ -15,10 +16,31 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Merge main into develop
+      - name: Create sync branch and PR
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          SYNC_BRANCH="sync/main-to-develop-$(date +%Y%m%d-%H%M%S)"
           git checkout develop
-          git merge main --no-edit
-          git push origin develop
+          git checkout -b "$SYNC_BRANCH"
+          git merge main --no-edit || {
+            echo "::warning::Merge conflict detected. Manual resolution required."
+            git merge --abort
+            exit 1
+          }
+
+          # Only create PR if there are actual differences
+          if git diff --quiet develop; then
+            echo "main and develop are already in sync."
+            exit 0
+          fi
+
+          git push origin "$SYNC_BRANCH"
+          gh pr create \
+            --base develop \
+            --head "$SYNC_BRANCH" \
+            --title "sync: merge main into develop" \
+            --body "Automated sync of main into develop after release merge."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

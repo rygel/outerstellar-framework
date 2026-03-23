@@ -81,4 +81,57 @@ class SmartShaderTest {
             SmartShader.hexToRgb("#gggggg")
         }
     }
+
+    @Test
+    fun `brightness overflow clamps to 255`() {
+        val result = SmartShader.adjustBrightness("#ffffff", 2.0)
+        assertEquals("#ffffff", result)
+    }
+
+    @Test
+    fun `brightness underflow clamps to 0`() {
+        val result = SmartShader.adjustBrightness("#808080", 0.0)
+        assertEquals("#000000", result)
+    }
+
+    @Test
+    fun `lighten white stays white`() {
+        val result = SmartShader.lighten("#ffffff")
+        assertEquals("#ffffff", result)
+    }
+
+    @Test
+    fun `darken black stays black`() {
+        val result = SmartShader.darken("#000000")
+        assertEquals("#000000", result)
+    }
+
+    @Test
+    fun `hexToRgb handles 0x prefix`() {
+        val (r, g, b) = SmartShader.hexToRgb("0xff0000")
+        assertEquals(255, r)
+        assertEquals(0, g)
+        assertEquals(0, b)
+    }
+
+    @Test
+    fun `hexToRgb is case insensitive`() {
+        val lower = SmartShader.hexToRgb("#ff00ff")
+        val upper = SmartShader.hexToRgb("#FF00FF")
+        assertEquals(lower, upper)
+    }
+
+    @Test
+    fun `invalid hex length throws`() {
+        assertThrows(IllegalArgumentException::class.java) {
+            SmartShader.hexToRgb("#ff00")
+        }
+    }
+
+    @Test
+    fun `rgbToHex round-trips correctly`() {
+        val hex = "#ab12cd"
+        val (r, g, b) = SmartShader.hexToRgb(hex)
+        assertEquals(hex, SmartShader.rgbToHex(r, g, b))
+    }
 }

@@ -31,15 +31,33 @@ class PluginManagerTest {
     }
 
     @Test
-    fun `withPlugin not found returns null`() {
+    fun `withPlugin not found returns null after initialization`() {
         val manager = PluginManager.create(DummyPlugin::class.java)
+        manager.discoverAndInitialize()
         assertNull(manager.withPlugin("nonexistent") { "found" })
     }
 
     @Test
-    fun `withEachPlugin on empty returns empty`() {
+    fun `withEachPlugin on empty returns empty after initialization`() {
         val manager = PluginManager.create(DummyPlugin::class.java)
+        manager.discoverAndInitialize()
         assertTrue(manager.withEachPlugin { it.name }.isEmpty())
+    }
+
+    @Test
+    fun `withPlugin throws before initialization`() {
+        val manager = PluginManager.create(DummyPlugin::class.java)
+        assertThrows(IllegalStateException::class.java) {
+            manager.withPlugin("any") { "found" }
+        }
+    }
+
+    @Test
+    fun `withEachPlugin throws before initialization`() {
+        val manager = PluginManager.create(DummyPlugin::class.java)
+        assertThrows(IllegalStateException::class.java) {
+            manager.withEachPlugin { it.name }
+        }
     }
 
     @Test
@@ -60,6 +78,13 @@ class PluginManagerTest {
         val manager = PluginManager.create(DummyPlugin::class.java)
         manager.discoverAndInitialize()
         assertTrue(manager.isInitialized())
+    }
+
+    @Test
+    fun `discoverAndInitialize returns PluginLoadResults`() {
+        val manager = PluginManager.create(DummyPlugin::class.java)
+        val results = manager.discoverAndInitialize()
+        assertTrue(results.all { it.success })
     }
 }
 

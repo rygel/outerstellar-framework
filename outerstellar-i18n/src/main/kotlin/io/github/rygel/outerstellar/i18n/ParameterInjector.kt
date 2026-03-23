@@ -1,28 +1,16 @@
 package io.github.rygel.outerstellar.i18n
 
 object ParameterInjector {
+    private val PLACEHOLDER = Regex("\\{(\\d+)}")
+
     @JvmStatic
     @JvmName("inject")
     fun inject(template: String, vararg params: Any): String {
         if (params.isEmpty()) return template
-        val sb = StringBuilder(template.length + params.size * 8)
-        var i = 0
-        while (i < template.length) {
-            if (template[i] == '{') {
-                val close = template.indexOf('}', i + 1)
-                if (close != -1) {
-                    val index = template.substring(i + 1, close).toIntOrNull()
-                    if (index != null && index in params.indices) {
-                        sb.append(params[index].toString())
-                        i = close + 1
-                        continue
-                    }
-                }
-            }
-            sb.append(template[i])
-            i++
+        return PLACEHOLDER.replace(template) { match ->
+            val index = match.groupValues[1].toInt()
+            if (index in params.indices) params[index].toString() else match.value
         }
-        return sb.toString()
     }
 
     @JvmStatic

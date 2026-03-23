@@ -14,6 +14,7 @@ class I18nService private constructor(
     private val classLoader: ClassLoader,
 ) {
     private val bundleCache = ConcurrentHashMap<String, ResourceBundle>()
+    private val dynamicBundles = ConcurrentHashMap<String, ResourceBundle>()
     private val listeners = CopyOnWriteArrayList<Translatable>()
     @Volatile private var currentLocale: Locale = Locale.getDefault()
 
@@ -74,54 +75,58 @@ class I18nService private constructor(
         }
     }
 
+    private fun findTemplate(key: String): String? {
+        // Check dynamic bundles first (overlay semantics)
+        for (bundle in dynamicBundles.values) {
+            try {
+                return bundle.getString(key)
+            } catch (_: MissingResourceException) {
+                // continue
+            }
+        }
+        // Fall back to locale-based bundle
+        return try {
+            getBundle().getString(key)
+        } catch (_: MissingResourceException) {
+            null
+        }
+    }
+
     @JvmOverloads
     fun translate(key: String, vararg params: Any): String {
-        return try {
-            val template = getBundle().getString(key)
-            if (params.isEmpty()) {
-                template
-            } else {
-                ParameterInjector.inject(template, *params)
-            }
-        } catch (e: MissingResourceException) {
-            key
-        }
+        val template = findTemplate(key) ?: return key
+        return if (params.isEmpty()) template else ParameterInjector.inject(template, *params)
     }
 
     @JvmOverloads
     fun translateOrDefault(key: String, default: String, vararg params: Any): String {
-        return try {
-            val template = getBundle().getString(key)
-            if (params.isEmpty()) {
-                template
-            } else {
-                ParameterInjector.inject(template, *params)
-            }
-        } catch (e: MissingResourceException) {
-            default
-        }
+        val template = findTemplate(key) ?: return default
+        return if (params.isEmpty()) template else ParameterInjector.inject(template, *params)
     }
 
     fun hasKey(key: String): Boolean {
-        return try {
-            getBundle().containsKey(key)
-        } catch (e: Exception) {
-            false
-        }
+        return findTemplate(key) != null
     }
 
     fun getKeys(): Set<String> {
-        return getBundle().keySet().toSet()
+        val keys = mutableSetOf<String>()
+        dynamicBundles.values.forEach { keys.addAll(it.keySet()) }
+        try {
+            keys.addAll(getBundle().keySet())
+        } catch (_: Exception) {
+            // ignore
+        }
+        return keys
     }
 
+    /** Clears the locale-based bundle cache, forcing a reload on next access. Dynamic bundles are preserved. */
     fun reload() {
         bundleCache.clear()
     }
 
     fun loadFromStream(inputStream: InputStream, key: String = "dynamic") {
         val bundle = PropertyResourceBundle(inputStream)
-        val localeKey = "${currentLocale.toString()}_${baseName}_$key"
-        bundleCache[localeKey] = bundle
+        dynamicBundles[key] = bundle
     }
 
     fun loadFromUrl(url: URL, key: String = "dynamic") {

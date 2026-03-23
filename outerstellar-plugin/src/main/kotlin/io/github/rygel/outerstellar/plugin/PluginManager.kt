@@ -2,8 +2,14 @@ package io.github.rygel.outerstellar.plugin
 
 import java.util.ServiceLoader
 import java.util.concurrent.ConcurrentHashMap
-import java.util.logging.Level
-import java.util.logging.Logger
+import org.slf4j.LoggerFactory
+
+/** Result of initializing a single plugin. */
+data class PluginLoadResult<T : Plugin>(
+    val plugin: T,
+    val success: Boolean,
+    val error: Exception? = null,
+)
 
 class PluginManager<T : Plugin> private constructor(
     private val pluginClass: Class<T>,
@@ -12,7 +18,7 @@ class PluginManager<T : Plugin> private constructor(
     private val cache = ConcurrentHashMap<String, T>()
     @Volatile private var initialized = false
 
-    private val logger = Logger.getLogger(PluginManager::class.java.name)
+    private val logger = LoggerFactory.getLogger(PluginManager::class.java)
 
     companion object {
         @JvmStatic
@@ -45,22 +51,34 @@ class PluginManager<T : Plugin> private constructor(
         return loader.toList()
     }
 
-    fun discoverAndInitialize(): List<T> {
+    /**
+     * Discovers and initializes all plugins. Returns a list of [PluginLoadResult] with success/failure details.
+     *
+     * @param strict if true, throws on the first plugin that fails to initialize.
+     */
+    @JvmOverloads
+    fun discoverAndInitialize(strict: Boolean = false): List<PluginLoadResult<T>> {
         val plugins = discover()
+        val results = mutableListOf<PluginLoadResult<T>>()
         plugins.forEach { plugin ->
             try {
                 plugin.initialize()
                 val previous = cache.put(plugin.name, plugin)
                 if (previous != null) {
-                    logger.warning("Plugin name collision: '${plugin.name}' replaced a previously registered plugin")
+                    logger.warn("Plugin name collision: '${plugin.name}' replaced a previously registered plugin")
                 }
-                logger.fine("Initialized plugin: ${plugin.name} v${plugin.version}")
+                logger.debug("Initialized plugin: ${plugin.name} v${plugin.version}")
+                results.add(PluginLoadResult(plugin, success = true))
             } catch (e: Exception) {
-                logger.log(Level.SEVERE, "Failed to initialize plugin ${plugin.name}", e)
+                logger.error("Failed to initialize plugin ${plugin.name}", e)
+                if (strict) {
+                    throw PluginInitializationException(plugin.name, e)
+                }
+                results.add(PluginLoadResult(plugin, success = false, error = e))
             }
         }
         initialized = true
-        return plugins
+        return results
     }
 
     fun getPlugin(name: String): T? = cache[name]
@@ -78,9 +96,9 @@ class PluginManager<T : Plugin> private constructor(
         cache.values.forEach { plugin ->
             try {
                 plugin.shutdown()
-                logger.fine("Shut down plugin: ${plugin.name}")
+                logger.debug("Shut down plugin: ${plugin.name}")
             } catch (e: Exception) {
-                logger.log(Level.WARNING, "Error shutting down plugin ${plugin.name}", e)
+                logger.warn("Error shutting down plugin ${plugin.name}", e)
             }
         }
         cache.clear()
@@ -90,16 +108,26 @@ class PluginManager<T : Plugin> private constructor(
         cache.remove(name)?.let { plugin ->
             try {
                 plugin.shutdown()
-                logger.fine("Shut down plugin: ${plugin.name}")
+                logger.debug("Shut down plugin: ${plugin.name}")
             } catch (e: Exception) {
-                logger.log(Level.WARNING, "Error shutting down plugin $name", e)
+                logger.warn("Error shutting down plugin $name", e)
             }
         }
     }
 
     fun isInitialized(): Boolean = initialized
 
-    fun <R> withPlugin(name: String, block: (T) -> R): R? = cache[name]?.let(block)
+    fun <R> withPlugin(name: String, block: (T) -> R): R? {
+        check(initialized) { "PluginManager has not been initialized. Call discoverAndInitialize() first." }
+        return cache[name]?.let(block)
+    }
 
-    fun <R> withEachPlugin(block: (T) -> R): List<R> = cache.values.map(block)
+    fun <R> withEachPlugin(block: (T) -> R): List<R> {
+        check(initialized) { "PluginManager has not been initialized. Call discoverAndInitialize() first." }
+        return cache.values.map(block)
+    }
 }
+
+/** Thrown in strict mode when a plugin fails to initialize. */
+class PluginInitializationException(pluginName: String, cause: Exception) :
+    RuntimeException("Plugin '$pluginName' failed to initialize", cause)

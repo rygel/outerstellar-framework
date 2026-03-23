@@ -8,6 +8,8 @@ import java.io.InputStream
 import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.Collections
+import java.util.concurrent.ConcurrentHashMap
 
 data class ColorScheme @JsonCreator constructor(
     @JsonProperty("base") val base: String,
@@ -20,41 +22,113 @@ data class ThemeColors @JsonCreator constructor(
 )
 
 class ThemeService private constructor(
-    private val objectMapper: ObjectMapper,
     private val themeColors: ThemeColors
 ) {
     companion object {
+        private val objectMapper = ObjectMapper()
+
         @JvmStatic
         @JvmName("create")
         fun create(): ThemeService {
-            return ThemeService(ObjectMapper(), ThemeColors(emptyMap()))
+            return ThemeService(ThemeColors(emptyMap()))
         }
 
         @JvmStatic
         @JvmName("createFromJson")
         fun createFromJson(json: String): ThemeService {
-            val mapper = ObjectMapper()
-            val themeColors = mapper.readValue(json, ThemeColors::class.java)
-            return ThemeService(mapper, themeColors)
+            val themeColors = objectMapper.readValue(json, ThemeColors::class.java)
+            return ThemeService(themeColors)
         }
+
+        @JvmStatic
+        fun builder(): Builder = Builder()
+    }
+
+    /**
+     * Fluent builder for composing themes from multiple sources.
+     *
+     * ```kotlin
+     * val theme = ThemeService.builder()
+     *     .fromClasspath("themes/base.json")
+     *     .fromClasspath("themes/overrides.json")
+     *     .addColor("accent", "#ff6600")
+     *     .build()
+     * ```
+     */
+    class Builder {
+        private var colors = mutableMapOf<String, ColorScheme>()
+
+        fun fromJson(json: String): Builder {
+            val loaded = objectMapper.readValue(json, ThemeColors::class.java)
+            colors.putAll(loaded.colors)
+            return this
+        }
+
+        fun fromFile(file: File): Builder {
+            val loaded = objectMapper.readValue(file, ThemeColors::class.java)
+            colors.putAll(loaded.colors)
+            return this
+        }
+
+        fun fromClasspath(path: String): Builder {
+            val inputStream = Builder::class.java.classLoader.getResourceAsStream(path)
+                ?: throw IllegalArgumentException("Resource not found: $path")
+            val loaded = objectMapper.readValue(inputStream, ThemeColors::class.java)
+            colors.putAll(loaded.colors)
+            return this
+        }
+
+        fun fromDirectory(directory: File): Builder {
+            if (!directory.isDirectory) {
+                throw IllegalArgumentException("Not a directory: ${directory.path}")
+            }
+            Files.list(directory.toPath())
+                .filter { it.toString().endsWith(".json") }
+                .forEach { path ->
+                    try {
+                        val json = Files.readString(path)
+                        val loaded = objectMapper.readValue(json, ThemeColors::class.java)
+                        colors.putAll(loaded.colors)
+                    } catch (e: Exception) {
+                        // skip unreadable files
+                    }
+                }
+            return this
+        }
+
+        fun addColor(name: String, scheme: ColorScheme): Builder {
+            colors[name] = scheme
+            return this
+        }
+
+        fun addColor(name: String, baseColor: String): Builder {
+            colors[name] = ColorScheme(
+                base = baseColor,
+                hover = SmartShader.hover(baseColor),
+                pressed = SmartShader.pressed(baseColor)
+            )
+            return this
+        }
+
+        fun build(): ThemeService = ThemeService(ThemeColors(colors.toMap()))
     }
 
     @JvmOverloads
     fun loadFromFile(file: File): ThemeService {
         val loaded = objectMapper.readValue(file, ThemeColors::class.java)
-        return ThemeService(objectMapper, loaded)
+        return ThemeService(loaded)
     }
 
     @JvmOverloads
     fun loadFromInputStream(inputStream: InputStream): ThemeService {
         val loaded = objectMapper.readValue(inputStream, ThemeColors::class.java)
-        return ThemeService(objectMapper, loaded)
+        return ThemeService(loaded)
     }
 
     @JvmOverloads
     fun loadFromUrl(url: URL): ThemeService {
         val loaded = objectMapper.readValue(url, ThemeColors::class.java)
-        return ThemeService(objectMapper, loaded)
+        return ThemeService(loaded)
     }
 
     @JvmOverloads
@@ -67,7 +141,7 @@ class ThemeService private constructor(
     @JvmOverloads
     fun loadFromJson(json: String): ThemeService {
         val loaded = objectMapper.readValue(json, ThemeColors::class.java)
-        return ThemeService(objectMapper, loaded)
+        return ThemeService(loaded)
     }
 
     @JvmOverloads
@@ -87,7 +161,7 @@ class ThemeService private constructor(
                     System.err.println("Failed to load theme from ${path}: ${e.message}")
                 }
             }
-        return ThemeService(objectMapper, ThemeColors(accumulated))
+        return ThemeService(ThemeColors(accumulated))
     }
 
     @JvmOverloads
@@ -107,12 +181,16 @@ class ThemeService private constructor(
 
     fun getPressedColor(name: String): String? = themeColors.colors[name]?.pressed
 
+    private val shadeCache = ConcurrentHashMap<String, ColorScheme>()
+
     fun computeShading(baseColor: String): ColorScheme {
-        return ColorScheme(
-            base = baseColor,
-            hover = SmartShader.hover(baseColor),
-            pressed = SmartShader.pressed(baseColor)
-        )
+        return shadeCache.computeIfAbsent(baseColor) {
+            ColorScheme(
+                base = it,
+                hover = SmartShader.hover(it),
+                pressed = SmartShader.pressed(it)
+            )
+        }
     }
 
     fun getOrCompute(name: String): ColorScheme {
@@ -126,7 +204,7 @@ class ThemeService private constructor(
             result["$name-hover"] = scheme.hover
             result["$name-pressed"] = scheme.pressed
         }
-        return result
+        return Collections.unmodifiableMap(result)
     }
 
     fun getHexMapWithComputed(baseColors: Map<String, String>): Map<String, String> {
@@ -137,7 +215,7 @@ class ThemeService private constructor(
             result["$name-hover"] = scheme.hover
             result["$name-pressed"] = scheme.pressed
         }
-        return result
+        return Collections.unmodifiableMap(result)
     }
 
     fun toCssVariables(): String {
@@ -179,7 +257,7 @@ class ThemeService private constructor(
 
     fun addColor(name: String, colorScheme: ColorScheme): ThemeService {
         val newColors = themeColors.colors + (name to colorScheme)
-        return ThemeService(objectMapper, ThemeColors(newColors))
+        return ThemeService(ThemeColors(newColors))
     }
 
     fun addColor(name: String, baseColor: String): ThemeService {

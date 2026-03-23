@@ -6,7 +6,7 @@
 
     <groupId>io.github.rygel</groupId>
     <artifactId>outerstellar-bom</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <packaging>pom</packaging>
 
     <name>Outerstellar Framework</name>
@@ -33,7 +33,7 @@
     </modules>
 
     <properties>
-        <outerstellar.version>1.0.6</outerstellar.version>
+        <outerstellar.version>1.0.7</outerstellar.version>
         <kotlin.version>2.0.21</kotlin.version>
         <jackson.version>2.21.2</jackson.version>
         <junit.version>6.0.3</junit.version>

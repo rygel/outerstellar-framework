@@ -12,7 +12,6 @@ permissions: {}
 jobs:
   release:
     runs-on: ubuntu-latest
-    # Only run when the version in pom.xml actually changed (release branch merge)
     permissions:
       contents: write
       packages: write
@@ -33,23 +32,25 @@ jobs:
       - name: Check if release already exists
         id: check
         run: |
-          if gh release view "v${{ steps.version.outputs.version }}" > /dev/null 2>&1; then
+          if gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
 
       - name: Create GitHub release
         if: steps.check.outputs.exists == 'false'
         run: |
-          gh release create "${{ steps.version.outputs.tag }}" \
+          gh release create "$RELEASE_TAG" \
             --target main \
-            --title "${{ steps.version.outputs.tag }}" \
+            --title "$RELEASE_TAG" \
             --generate-notes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
 
       - name: Set up JDK 21
         if: steps.check.outputs.exists == 'false'

@@ -50,6 +50,7 @@
         <outerstellar.version>${revision}</outerstellar.version>
         <kotlin.version>2.0.21</kotlin.version>
         <jackson.version>2.21.2</jackson.version>
+        <jackson.annotations.version>2.21</jackson.annotations.version>
         <junit.version>6.0.3</junit.version>
         <slf4j.version>2.0.17</slf4j.version>
         <flatlaf.version>3.7.1</flatlaf.version>
@@ -132,6 +133,17 @@
                 <artifactId>junit-jupiter</artifactId>
                 <version>${junit.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.annotations.version}</version>
             </dependency>
             <!-- Logging -->
             <dependency>

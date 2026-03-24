@@ -16,7 +16,9 @@ class I18nService private constructor(
     private val bundleCache = ConcurrentHashMap<String, ResourceBundle>()
     private val dynamicBundles = ConcurrentHashMap<String, ResourceBundle>()
     private val listeners = CopyOnWriteArrayList<Translatable>()
-    @Volatile private var currentLocale: Locale = Locale.getDefault()
+
+    @Volatile
+    private var currentLocale: Locale = Locale.getDefault()
 
     companion object {
         @JvmStatic
@@ -34,18 +36,21 @@ class I18nService private constructor(
         @JvmStatic
         @JvmName("createWithLocale")
         @JvmOverloads
-        fun create(baseName: String, locale: Locale, classLoader: ClassLoader = Thread.currentThread().contextClassLoader): I18nService {
+        fun create(
+            baseName: String,
+            locale: Locale,
+            classLoader: ClassLoader = Thread.currentThread().contextClassLoader,
+        ): I18nService {
             val service = I18nService(baseName, classLoader)
             service.setLocale(locale)
             return service
         }
     }
 
-    @JvmOverloads
     fun setLocale(locale: Locale) {
         currentLocale = locale
         bundleCache.clear()
-        notifyListeners()
+        listeners.forEach { it.updateTexts() }
     }
 
     fun getLocale(): Locale = currentLocale
@@ -60,16 +65,12 @@ class I18nService private constructor(
         listeners.remove(listener)
     }
 
-    private fun notifyListeners() {
-        listeners.forEach { it.updateTexts() }
-    }
-
     private fun getBundle(): ResourceBundle {
-        val key = "${currentLocale.toString()}_$baseName"
+        val key = "${currentLocale}_$baseName"
         return bundleCache.getOrPut(key) {
             try {
                 ResourceBundle.getBundle(baseName, currentLocale, classLoader)
-            } catch (e: MissingResourceException) {
+            } catch (_: MissingResourceException) {
                 ResourceBundle.getBundle(baseName, Locale.getDefault(), classLoader)
             }
         }
@@ -92,13 +93,11 @@ class I18nService private constructor(
         }
     }
 
-    @JvmOverloads
     fun translate(key: String, vararg params: Any): String {
         val template = findTemplate(key) ?: return key
         return if (params.isEmpty()) template else ParameterInjector.inject(template, *params)
     }
 
-    @JvmOverloads
     fun translateOrDefault(key: String, default: String, vararg params: Any): String {
         val template = findTemplate(key) ?: return default
         return if (params.isEmpty()) template else ParameterInjector.inject(template, *params)

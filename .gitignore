@@ -6,3 +6,6 @@ target/
 *.log
 .DS_Store
 .flattened-pom.xml
+node_modules/
+desktop/
+*.mv.db

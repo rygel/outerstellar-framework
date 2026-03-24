@@ -8,6 +8,7 @@ permissions: {}
 jobs:
   publish:
     runs-on: ubuntu-latest
+    environment: maven-central
     permissions:
       contents: read
 

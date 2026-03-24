@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.rygel</groupId>
-  <artifactId>outerstellar-i18n-validator-cli</artifactId>
-  <name>Outerstellar i18n CLI</name>
+  <artifactId>outerstellar-plugin</artifactId>
   <version>1.0.9</version>
-  <description>Command-line interface for i18n validation</description>
-  <url>https://github.com/rygel/outerstellar-framework/outerstellar-i18n-validator-cli</url>
-  <developers>
-    <developer>
-      <name>Alexander Brandt</name>
-      <email>github@a13x.de</email>
-      <url>https://github.com/rygel</url>
-    </developer>
-  </developers>
+  <name>Outerstellar Plugin</name>
+  <description>SPI extension engine for safe runtime plugin discovery via ServiceLoader</description>
+  <url>https://github.com/rygel/outerstellar-framework/outerstellar-plugin</url>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -21,20 +15,18 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  <developers>
+    <developer>
+      <name>Alexander Brandt</name>
+      <email>github@a13x.de</email>
+      <url>https://github.com/rygel</url>
+    </developer>
+  </developers>
   <scm>
-    <connection>scm:git:https://github.com/rygel/outerstellar-framework.git/outerstellar-i18n-validator-cli</connection>
-    <developerConnection>scm:git:ssh://git@github.com/rygel/outerstellar-framework.git/outerstellar-i18n-validator-cli</developerConnection>
-    <url>https://github.com/rygel/outerstellar-framework/outerstellar-i18n-validator-cli</url>
+    <connection>scm:git:https://github.com/rygel/outerstellar-framework.git/outerstellar-plugin</connection>
+    <developerConnection>scm:git:ssh://git@github.com/rygel/outerstellar-framework.git/outerstellar-plugin</developerConnection>
+    <url>https://github.com/rygel/outerstellar-framework/outerstellar-plugin</url>
   </scm>
-  <repositories>
-    <repository>
-      <releases />
-      <snapshots />
-      <id>github-rygel</id>
-      <name>GitHub Packages - rygel/outerstellar-framework</name>
-      <url>https://maven.pkg.github.com/rygel/outerstellar-framework</url>
-    </repository>
-  </repositories>
   <distributionManagement>
     <repository>
       <id>github-rygel</id>
@@ -67,4 +59,31 @@
     <maven.clean.plugin.version>3.5.0</maven.clean.plugin.version>
     <maven.plugin.api.version>3.9.14</maven.plugin.api.version>
   </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>2.0.21</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.17</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>github-rygel</id>
+      <name>GitHub Packages - rygel/outerstellar-framework</name>
+      <url>https://maven.pkg.github.com/rygel/outerstellar-framework</url>
+    </repository>
+  </repositories>
 </project>

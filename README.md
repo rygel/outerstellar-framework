@@ -16,7 +16,6 @@ Headless, framework-agnostic Kotlin utilities for modern JVM development.
 | **outerstellar-i18n-validator-maven-plugin** | Maven plugin for build-time i18n key validation |
 | **outerstellar-i18n-validator-cli** | Command-line interface for i18n validation |
 | **outerstellar-i18n-validator-gui** | Swing GUI for interactive i18n validation |
-| **outerstellar-world-cities** | Utility for converting PostgreSQL world cities data to H2 format with SQL compression |
 
 ## Installation
 
@@ -39,13 +38,13 @@ Then add the modules you need:
 <dependency>
     <groupId>io.github.rygel</groupId>
     <artifactId>outerstellar-i18n</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
 </dependency>
 
 <dependency>
     <groupId>io.github.rygel</groupId>
     <artifactId>outerstellar-theme</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
 </dependency>
 ```
 

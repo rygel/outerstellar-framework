@@ -29,7 +29,6 @@
         <module>outerstellar-i18n-validator-maven-plugin</module>
         <module>outerstellar-i18n-validator-cli</module>
         <module>outerstellar-i18n-validator-gui</module>
-        <module>outerstellar-world-cities</module>
     </modules>
 
     <properties>

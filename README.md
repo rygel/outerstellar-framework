@@ -16,7 +16,6 @@ Headless, framework-agnostic Kotlin utilities for modern JVM development.
 | **outerstellar-i18n-validator-maven-plugin** | Maven plugin for build-time i18n key validation |
 | **outerstellar-i18n-validator-cli** | Command-line interface for i18n validation |
 | **outerstellar-i18n-validator-gui** | Swing GUI for interactive i18n validation |
-| **outerstellar-world-cities** | Utility for converting PostgreSQL world cities data to H2 format with SQL compression |
 
 ## Installation
 

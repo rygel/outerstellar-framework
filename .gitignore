@@ -5,3 +5,4 @@ target/
 *.jar
 *.log
 .DS_Store
+.flattened-pom.xml

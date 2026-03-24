@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.rygel</groupId>
-    <artifactId>outerstellar-bom</artifactId>
-    <version>1.0.7</version>
+    <artifactId>outerstellar-framework-bom</artifactId>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <name>Outerstellar Framework</name>
@@ -46,7 +46,8 @@
     </modules>
 
     <properties>
-        <outerstellar.version>1.0.7</outerstellar.version>
+        <revision>1.0.10</revision>
+        <outerstellar.version>${revision}</outerstellar.version>
         <kotlin.version>2.0.21</kotlin.version>
         <jackson.version>2.21.2</jackson.version>
         <junit.version>6.0.3</junit.version>
@@ -322,6 +323,30 @@
 
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.7.0</version>
+                <configuration>
+                    <flattenMode>bom</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
@@ -366,7 +391,25 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>${maven.jar.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>empty-javadoc-jar</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <classifier>javadoc</classifier>
+                                    <classesDirectory>${project.basedir}/src</classesDirectory>
+                                    <includes>
+                                        <include>**/*.kt</include>
+                                        <include>**/*.java</include>
+                                    </includes>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

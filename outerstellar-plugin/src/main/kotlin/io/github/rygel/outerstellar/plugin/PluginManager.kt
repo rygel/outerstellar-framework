@@ -1,14 +1,14 @@
 package io.github.rygel.outerstellar.plugin
 
+import org.slf4j.LoggerFactory
 import java.util.ServiceLoader
 import java.util.concurrent.ConcurrentHashMap
-import org.slf4j.LoggerFactory
 
 /** Result of initializing a single plugin. */
 data class PluginLoadResult<T : Plugin>(
     val plugin: T,
     val success: Boolean,
-    val error: Exception? = null,
+    val error: Throwable? = null,
 )
 
 class PluginManager<T : Plugin> private constructor(
@@ -16,7 +16,9 @@ class PluginManager<T : Plugin> private constructor(
     private val classLoader: ClassLoader,
 ) {
     private val cache = ConcurrentHashMap<String, T>()
-    @Volatile private var initialized = false
+
+    @Volatile
+    private var initialized = false
 
     private val logger = LoggerFactory.getLogger(PluginManager::class.java)
 
@@ -61,21 +63,22 @@ class PluginManager<T : Plugin> private constructor(
         val plugins = discover()
         val results = mutableListOf<PluginLoadResult<T>>()
         plugins.forEach { plugin ->
-            try {
-                plugin.initialize()
-                val previous = cache.put(plugin.name, plugin)
-                if (previous != null) {
-                    logger.warn("Plugin name collision: '${plugin.name}' replaced a previously registered plugin")
+            runCatching { plugin.initialize() }
+                .onSuccess {
+                    val previous = cache.put(plugin.name, plugin)
+                    if (previous != null) {
+                        logger.warn("Plugin name collision: '${plugin.name}' replaced a previously registered plugin")
+                    }
+                    logger.debug("Initialized plugin: ${plugin.name} v${plugin.version}")
+                    results.add(PluginLoadResult(plugin, success = true))
                 }
-                logger.debug("Initialized plugin: ${plugin.name} v${plugin.version}")
-                results.add(PluginLoadResult(plugin, success = true))
-            } catch (e: Exception) {
-                logger.error("Failed to initialize plugin ${plugin.name}", e)
-                if (strict) {
-                    throw PluginInitializationException(plugin.name, e)
+                .onFailure { e ->
+                    logger.error("Failed to initialize plugin ${plugin.name}", e)
+                    if (strict) {
+                        throw PluginInitializationException(plugin.name, e)
+                    }
+                    results.add(PluginLoadResult(plugin, success = false, error = e))
                 }
-                results.add(PluginLoadResult(plugin, success = false, error = e))
-            }
         }
         initialized = true
         return results
@@ -94,24 +97,18 @@ class PluginManager<T : Plugin> private constructor(
 
     fun shutdownAll() {
         cache.values.forEach { plugin ->
-            try {
-                plugin.shutdown()
-                logger.debug("Shut down plugin: ${plugin.name}")
-            } catch (e: Exception) {
-                logger.warn("Error shutting down plugin ${plugin.name}", e)
-            }
+            runCatching { plugin.shutdown() }
+                .onSuccess { logger.debug("Shut down plugin: ${plugin.name}") }
+                .onFailure { e -> logger.warn("Error shutting down plugin ${plugin.name}", e) }
         }
         cache.clear()
     }
 
     fun shutdownPlugin(name: String) {
         cache.remove(name)?.let { plugin ->
-            try {
-                plugin.shutdown()
-                logger.debug("Shut down plugin: ${plugin.name}")
-            } catch (e: Exception) {
-                logger.warn("Error shutting down plugin $name", e)
-            }
+            runCatching { plugin.shutdown() }
+                .onSuccess { logger.debug("Shut down plugin: ${plugin.name}") }
+                .onFailure { e -> logger.warn("Error shutting down plugin $name", e) }
         }
     }
 
@@ -129,5 +126,5 @@ class PluginManager<T : Plugin> private constructor(
 }
 
 /** Thrown in strict mode when a plugin fails to initialize. */
-class PluginInitializationException(pluginName: String, cause: Exception) :
+class PluginInitializationException(pluginName: String, cause: Throwable) :
     RuntimeException("Plugin '$pluginName' failed to initialize", cause)

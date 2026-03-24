@@ -46,7 +46,7 @@
     </modules>
 
     <properties>
-        <revision>1.0.9</revision>
+        <revision>1.0.10</revision>
         <outerstellar.version>${revision}</outerstellar.version>
         <kotlin.version>2.0.21</kotlin.version>
         <jackson.version>2.21.2</jackson.version>
@@ -391,7 +391,25 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>${maven.jar.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>empty-javadoc-jar</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <classifier>javadoc</classifier>
+                                    <classesDirectory>${project.basedir}/src</classesDirectory>
+                                    <includes>
+                                        <include>**/*.kt</include>
+                                        <include>**/*.java</include>
+                                    </includes>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

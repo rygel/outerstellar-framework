@@ -1,7 +1,9 @@
 package io.github.rygel.outerstellar.i18n
 
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.*
 import java.util.Locale
 
 class I18nServiceTest {

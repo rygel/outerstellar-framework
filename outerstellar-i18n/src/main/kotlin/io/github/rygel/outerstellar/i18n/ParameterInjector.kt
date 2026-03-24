@@ -16,6 +16,10 @@ object ParameterInjector {
     @JvmStatic
     @JvmName("injectToList")
     fun inject(template: String, params: List<Any>): String {
-        return inject(template, *params.toTypedArray())
+        if (params.isEmpty()) return template
+        return PLACEHOLDER.replace(template) { match ->
+            val index = match.groupValues[1].toInt()
+            if (index in params.indices) params[index].toString() else match.value
+        }
     }
 }

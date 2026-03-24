@@ -4,7 +4,7 @@
   <groupId>io.github.rygel</groupId>
   <artifactId>outerstellar-i18n-validator-cli</artifactId>
   <name>Outerstellar i18n CLI</name>
-  <version>1.0.9</version>
+  <version>1.0.10</version>
   <description>Command-line interface for i18n validation</description>
   <url>https://github.com/rygel/outerstellar-framework/outerstellar-i18n-validator-cli</url>
   <developers>
@@ -55,7 +55,7 @@
     <maven.deploy.plugin.version>3.1.4</maven.deploy.plugin.version>
     <maven.jar.plugin.version>3.5.0</maven.jar.plugin.version>
     <jacoco.version>0.8.14</jacoco.version>
-    <revision>1.0.9</revision>
+    <revision>1.0.10</revision>
     <maven.surefire.plugin.version>3.5.5</maven.surefire.plugin.version>
     <maven.compiler.release>21</maven.compiler.release>
     <maven.source.plugin.version>3.4.0</maven.source.plugin.version>
@@ -63,7 +63,7 @@
     <maven.install.plugin.version>3.1.4</maven.install.plugin.version>
     <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <outerstellar.version>1.0.9</outerstellar.version>
+    <outerstellar.version>1.0.10</outerstellar.version>
     <maven.clean.plugin.version>3.5.0</maven.clean.plugin.version>
     <maven.plugin.api.version>3.9.14</maven.plugin.api.version>
   </properties>

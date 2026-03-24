@@ -38,13 +38,13 @@ Then add the modules you need:
 <dependency>
     <groupId>io.github.rygel</groupId>
     <artifactId>outerstellar-i18n</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.10</version>
 </dependency>
 
 <dependency>
     <groupId>io.github.rygel</groupId>
     <artifactId>outerstellar-theme</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.10</version>
 </dependency>
 ```
 

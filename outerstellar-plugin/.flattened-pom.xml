@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.github.rygel</groupId>
+  <artifactId>outerstellar-plugin</artifactId>
+  <version>1.0.9</version>
+  <name>Outerstellar Plugin</name>
+  <description>SPI extension engine for safe runtime plugin discovery via ServiceLoader</description>
+  <url>https://github.com/rygel/outerstellar-framework/outerstellar-plugin</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Alexander Brandt</name>
+      <email>github@a13x.de</email>
+      <url>https://github.com/rygel</url>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/rygel/outerstellar-framework.git/outerstellar-plugin</connection>
+    <developerConnection>scm:git:ssh://git@github.com/rygel/outerstellar-framework.git/outerstellar-plugin</developerConnection>
+    <url>https://github.com/rygel/outerstellar-framework/outerstellar-plugin</url>
+  </scm>
+  <distributionManagement>
+    <repository>
+      <id>github-rygel</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/rygel/outerstellar-framework</url>
+    </repository>
+  </distributionManagement>
+  <properties>
+    <maven.plugin.annotations.version>3.15.2</maven.plugin.annotations.version>
+    <kotlin.version>2.0.21</kotlin.version>
+    <maven.plugin.plugin.version>3.15.2</maven.plugin.plugin.version>
+    <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
+    <jackson.version>2.21.2</jackson.version>
+    <maven.resources.plugin.version>3.5.0</maven.resources.plugin.version>
+    <slf4j.version>2.0.17</slf4j.version>
+    <junit.version>6.0.3</junit.version>
+    <maven.site.plugin.version>3.21.0</maven.site.plugin.version>
+    <maven.deploy.plugin.version>3.1.4</maven.deploy.plugin.version>
+    <maven.jar.plugin.version>3.5.0</maven.jar.plugin.version>
+    <jacoco.version>0.8.14</jacoco.version>
+    <revision>1.0.9</revision>
+    <maven.surefire.plugin.version>3.5.5</maven.surefire.plugin.version>
+    <maven.compiler.release>21</maven.compiler.release>
+    <maven.source.plugin.version>3.4.0</maven.source.plugin.version>
+    <flatlaf.version>3.7.1</flatlaf.version>
+    <maven.install.plugin.version>3.1.4</maven.install.plugin.version>
+    <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <outerstellar.version>1.0.9</outerstellar.version>
+    <maven.clean.plugin.version>3.5.0</maven.clean.plugin.version>
+    <maven.plugin.api.version>3.9.14</maven.plugin.api.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>2.0.21</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.17</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>github-rygel</id>
+      <name>GitHub Packages - rygel/outerstellar-framework</name>
+      <url>https://maven.pkg.github.com/rygel/outerstellar-framework</url>
+    </repository>
+  </repositories>
+</project>

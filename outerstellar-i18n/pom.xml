@@ -6,8 +6,8 @@
 
     <parent>
         <groupId>io.github.rygel</groupId>
-        <artifactId>outerstellar-bom</artifactId>
-        <version>1.0.7</version>
+        <artifactId>outerstellar-framework-bom</artifactId>
+        <version>${revision}</version>
         <relativePath>..</relativePath>
     </parent>
 

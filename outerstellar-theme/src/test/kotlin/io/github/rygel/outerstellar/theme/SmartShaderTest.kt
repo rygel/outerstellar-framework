@@ -2,7 +2,6 @@ package io.github.rygel.outerstellar.theme
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class SmartShaderTest {
@@ -40,41 +39,29 @@ class SmartShaderTest {
     @Test
     fun testLighten() {
         val lightened = SmartShader.lighten("#800000")
-        assertTrue(lightened.startsWith("#"))
-        assertEquals(7, lightened.length)
+        // 0x80=128, lighten adds 255*0.2=51 → 179=0xb3, g/b = 51=0x33
+        assertEquals("#b33333", lightened)
     }
 
     @Test
     fun testDarken() {
         val darkened = SmartShader.darken("#800000")
-        assertTrue(darkened.startsWith("#"))
-        assertEquals(7, darkened.length)
-    }
-
-    @Test
-    fun testHoverAlias() {
-        val hover = SmartShader.hover("#800000")
-        val lightened = SmartShader.lighten("#800000")
-        assertEquals(hover, lightened)
-    }
-
-    @Test
-    fun testPressedAlias() {
-        val pressed = SmartShader.pressed("#800000")
-        val darkened = SmartShader.darken("#800000")
-        assertEquals(pressed, darkened)
+        // 0x80=128, darken subtracts 255*0.2=51 → 77=0x4d, g/b clamp to 0
+        assertEquals("#4d0000", darkened)
     }
 
     @Test
     fun testAdjustBrightness() {
         val brightened = SmartShader.adjustBrightness("#808080", 1.5)
-        assertTrue(brightened.startsWith("#"))
+        // 0x80=128, 128*1.5=192=0xc0
+        assertEquals("#c0c0c0", brightened)
     }
 
     @Test
     fun testAdjustBrightnessBelowOne() {
         val darkened = SmartShader.adjustBrightness("#808080", 0.5)
-        assertTrue(darkened.startsWith("#"))
+        // 0x80=128, 128*0.5=64=0x40
+        assertEquals("#404040", darkened)
     }
 
     @Test

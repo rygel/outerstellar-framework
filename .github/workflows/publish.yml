@@ -67,7 +67,7 @@ jobs:
 
       - name: Build and test
         if: steps.check.outputs.exists == 'false'
-        run: mvn clean verify
+        run: mvn clean verify -T 4
 
       - name: Publish to GitHub Packages
         if: steps.check.outputs.exists == 'false'

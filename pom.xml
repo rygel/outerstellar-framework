@@ -426,5 +426,12 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>fast</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+                <detekt.skip>true</detekt.skip>
+            </properties>
+        </profile>
     </profiles>
 </project>

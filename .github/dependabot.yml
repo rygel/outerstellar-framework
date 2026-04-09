@@ -7,8 +7,9 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 10
     ignore:
-      # Kotlin is pinned to 2.0.x intentionally: the framework targets Kotlin 2.0
-      # to ensure forward compatibility. Update manually when the policy changes.
+      # Kotlin is pinned to 2.0.x intentionally: the framework targets Kotlin 2.0 for API
+      # stability and to avoid breaking changes from 2.1+. All semver levels are suppressed
+      # (major, minor, and patch). Update manually when the policy changes.
       - dependency-name: "org.jetbrains.kotlin:*"
         update-types: ["version-update:semver-major", "version-update:semver-minor", "version-update:semver-patch"]
 

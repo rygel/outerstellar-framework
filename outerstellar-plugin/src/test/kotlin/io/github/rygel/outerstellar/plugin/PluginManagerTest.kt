@@ -159,6 +159,20 @@ class PluginManagerTest {
     }
 
     @Test
+    fun `initialized flag is visible across threads`() {
+        val manager = PluginManager.create(DummyPlugin::class.java)
+        val latch = java.util.concurrent.CountDownLatch(1)
+        val thread = Thread {
+            manager.discoverAndInitialize()
+            latch.countDown()
+        }
+        thread.start()
+        val completed = latch.await(2, java.util.concurrent.TimeUnit.SECONDS)
+        assertTrue(completed, "Initialization did not complete within 2 seconds")
+        assertTrue(manager.isInitialized(), "Initialized flag not visible on calling thread")
+    }
+
+    @Test
     fun `PluginInitializationException contains plugin name`() {
         val cause = RuntimeException("boom")
         val exception = PluginInitializationException("my-plugin", cause)

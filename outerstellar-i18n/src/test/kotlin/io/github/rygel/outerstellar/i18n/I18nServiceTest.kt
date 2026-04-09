@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.util.Locale
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 class I18nServiceTest {
 
@@ -185,5 +187,34 @@ class I18nServiceTest {
     fun `translateOrDefault returns default when key missing`() {
         val service = I18nService.create("nonexistent")
         assertEquals("fallback", service.translateOrDefault("missing", "fallback", "unused"))
+    }
+
+    @Test
+    fun `setLocale is safe under concurrent callers`() {
+        val service = I18nService.create("nonexistent")
+        val startLatch = CountDownLatch(1)
+        val doneLatch = CountDownLatch(8)
+        val errors = java.util.concurrent.CopyOnWriteArrayList<Throwable>()
+
+        repeat(8) {
+            Thread {
+                startLatch.await()
+                try {
+                    repeat(50) { i ->
+                        val locale = if (i % 2 == 0) Locale.ENGLISH else Locale.FRENCH
+                        service.setLocale(locale)
+                        service.translate("any.key")
+                    }
+                } catch (e: Throwable) {
+                    errors.add(e)
+                } finally {
+                    doneLatch.countDown()
+                }
+            }.start()
+        }
+
+        startLatch.countDown()
+        doneLatch.await(10, TimeUnit.SECONDS)
+        assertTrue(errors.isEmpty(), "Concurrent setLocale threw: ${errors.firstOrNull()}")
     }
 }

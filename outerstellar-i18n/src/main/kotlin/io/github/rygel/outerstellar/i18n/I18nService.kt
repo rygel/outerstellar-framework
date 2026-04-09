@@ -47,6 +47,7 @@ class I18nService private constructor(
         }
     }
 
+    @Synchronized
     fun setLocale(locale: Locale) {
         currentLocale = locale
         bundleCache.clear()

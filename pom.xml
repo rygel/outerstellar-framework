@@ -286,6 +286,9 @@
                     <configuration>
                         <forkedProcessTimeoutInSeconds>300</forkedProcessTimeoutInSeconds>
                         <argLine>@{argLine}</argLine>
+                        <systemPropertyVariables>
+                            <junit.jupiter.execution.timeout.default>120s</junit.jupiter.execution.timeout.default>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
                 <plugin>

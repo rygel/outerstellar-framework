@@ -159,7 +159,7 @@ class PluginManagerTest {
     }
 
     @Test
-    fun `initialized flag is visible across threads`() {
+    fun `initialization completes when called on background thread`() {
         val manager = PluginManager.create(DummyPlugin::class.java)
         val latch = java.util.concurrent.CountDownLatch(1)
         val thread = Thread {

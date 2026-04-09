@@ -214,7 +214,8 @@ class I18nServiceTest {
         }
 
         startLatch.countDown()
-        doneLatch.await(10, TimeUnit.SECONDS)
+        val completed = doneLatch.await(10, TimeUnit.SECONDS)
+        assertTrue(completed, "Threads did not finish within 10 seconds")
         assertTrue(errors.isEmpty(), "Concurrent setLocale threw: ${errors.firstOrNull()}")
     }
 }

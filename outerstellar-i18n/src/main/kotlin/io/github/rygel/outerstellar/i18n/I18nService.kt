@@ -67,10 +67,11 @@ class I18nService private constructor(
     }
 
     private fun getBundle(): ResourceBundle {
-        val key = "${currentLocale}_$baseName"
+        val locale = currentLocale  // capture once, use consistently
+        val key = "${locale}_$baseName"
         return bundleCache.getOrPut(key) {
             try {
-                ResourceBundle.getBundle(baseName, currentLocale, classLoader)
+                ResourceBundle.getBundle(baseName, locale, classLoader)
             } catch (_: MissingResourceException) {
                 ResourceBundle.getBundle(baseName, Locale.getDefault(), classLoader)
             }

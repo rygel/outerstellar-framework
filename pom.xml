@@ -452,6 +452,7 @@
             <properties>
                 <maven.test.skip>true</maven.test.skip>
                 <detekt.skip>true</detekt.skip>
+                <jacoco.skip>true</jacoco.skip>
             </properties>
         </profile>
     </profiles>

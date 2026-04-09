@@ -65,12 +65,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and test
+      - name: Build, test, and publish to GitHub Packages
         if: steps.check.outputs.exists == 'false'
-        run: mvn clean verify -T 4
-
-      - name: Publish to GitHub Packages
-        if: steps.check.outputs.exists == 'false'
-        run: mvn deploy -DskipTests
+        run: mvn clean deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -238,6 +238,8 @@
                                 <rules>
                                     <dependencyConvergence/>
                                     <requirePluginVersions/>
+                                    <requireReleaseDeps/>
+                                    <banDynamicVersions/>
                                 </rules>
                             </configuration>
                         </execution>

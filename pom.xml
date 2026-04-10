@@ -198,6 +198,9 @@
                     <groupId>org.jetbrains.kotlin</groupId>
                     <artifactId>kotlin-maven-plugin</artifactId>
                     <version>${kotlin.version}</version>
+                    <configuration>
+                        <jvmTarget>21</jvmTarget>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -238,6 +241,8 @@
                                 <rules>
                                     <dependencyConvergence/>
                                     <requirePluginVersions/>
+                                    <requireReleaseDeps/>
+                                    <banDynamicVersions/>
                                 </rules>
                             </configuration>
                         </execution>
@@ -283,6 +288,13 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven.surefire.plugin.version}</version>
+                    <configuration>
+                        <forkedProcessTimeoutInSeconds>300</forkedProcessTimeoutInSeconds>
+                        <argLine>@{argLine}</argLine>
+                        <systemPropertyVariables>
+                            <junit.jupiter.execution.timeout.default>120s</junit.jupiter.execution.timeout.default>
+                        </systemPropertyVariables>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

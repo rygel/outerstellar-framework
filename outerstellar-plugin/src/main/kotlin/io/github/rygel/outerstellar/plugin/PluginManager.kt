@@ -3,6 +3,7 @@ package io.github.rygel.outerstellar.plugin
 import org.slf4j.LoggerFactory
 import java.util.ServiceLoader
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
 
 /** Result of initializing a single plugin. */
 data class PluginLoadResult<T : Plugin>(
@@ -11,14 +12,20 @@ data class PluginLoadResult<T : Plugin>(
     val error: Throwable? = null,
 )
 
+/**
+ * Note: [PluginManager] uses [java.util.concurrent.atomic.AtomicBoolean] for the
+ * [initialized] flag, which guarantees visibility and atomic reads/writes. However,
+ * [reload] is not thread-safe under concurrent callers — it does not reset [initialized]
+ * on shutdown and uses a check-then-act pattern that is not protected by a mutex.
+ * This class should be used from a single thread or with external synchronisation.
+ */
 class PluginManager<T : Plugin> private constructor(
     private val pluginClass: Class<T>,
     private val classLoader: ClassLoader,
 ) {
     private val cache = ConcurrentHashMap<String, T>()
 
-    @Volatile
-    private var initialized = false
+    private val initialized = AtomicBoolean(false)
 
     private val logger = LoggerFactory.getLogger(PluginManager::class.java)
 
@@ -80,7 +87,7 @@ class PluginManager<T : Plugin> private constructor(
                     results.add(PluginLoadResult(plugin, success = false, error = e))
                 }
         }
-        initialized = true
+        initialized.set(true)
         return results
     }
 
@@ -90,7 +97,7 @@ class PluginManager<T : Plugin> private constructor(
 
     fun reload() {
         shutdownAll()
-        if (initialized) {
+        if (initialized.get()) {
             discoverAndInitialize()
         }
     }
@@ -112,15 +119,15 @@ class PluginManager<T : Plugin> private constructor(
         }
     }
 
-    fun isInitialized(): Boolean = initialized
+    fun isInitialized(): Boolean = initialized.get()
 
     fun <R> withPlugin(name: String, block: (T) -> R): R? {
-        check(initialized) { "PluginManager has not been initialized. Call discoverAndInitialize() first." }
+        check(initialized.get()) { "PluginManager has not been initialized. Call discoverAndInitialize() first." }
         return cache[name]?.let(block)
     }
 
     fun <R> withEachPlugin(block: (T) -> R): List<R> {
-        check(initialized) { "PluginManager has not been initialized. Call discoverAndInitialize() first." }
+        check(initialized.get()) { "PluginManager has not been initialized. Call discoverAndInitialize() first." }
         return cache.values.map(block)
     }
 }

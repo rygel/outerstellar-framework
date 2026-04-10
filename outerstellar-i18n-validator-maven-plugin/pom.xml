@@ -16,6 +16,10 @@
     <name>Outerstellar i18n Maven Plugin</name>
     <description>Maven plugin for validating i18n property files</description>
 
+    <properties>
+        <jacoco.skip>true</jacoco.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.github.rygel</groupId>

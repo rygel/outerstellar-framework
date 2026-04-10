@@ -17,6 +17,7 @@
 
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
+        <jacoco.skip>true</jacoco.skip>
     </properties>
 
     <dependencies/>

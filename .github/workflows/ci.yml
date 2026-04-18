@@ -28,7 +28,7 @@ jobs:
           cache: 'maven'
 
       - name: Build, test, and verify
-        run: mvn clean verify
+        run: mvn clean verify -T 4
 
       - name: Upload JaCoCo coverage reports
         if: always()

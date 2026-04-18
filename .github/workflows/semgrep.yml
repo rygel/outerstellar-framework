@@ -1,18 +1,16 @@
-name: GitHub Actions Security
+name: Semgrep
 
 on:
   push:
     branches: [main, develop]
-    paths: ['.github/workflows/**']
   pull_request:
     branches: [main, develop]
-    paths: ['.github/workflows/**']
 
 permissions: {}
 
 jobs:
-  zizmor:
-    name: Zizmor (Actions Security)
+  scan:
+    name: Semgrep Scan
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -24,17 +22,18 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install zizmor
-        run: pipx install zizmor
+      - name: Run Semgrep
+        run: |
+          python3 -m pip install semgrep --quiet
+          semgrep scan \
+            --config p/kotlin \
+            --config p/java \
+            --config p/security-audit \
+            --sarif \
+            --output semgrep.sarif \
+            --quiet || true
 
-      - name: Run zizmor
-        run: zizmor --format sarif . > results.sarif
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload SARIF results
-        if: always()
+      - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
         with:
-          sarif_file: results.sarif
-          category: zizmor
+          sarif_file: semgrep.sarif

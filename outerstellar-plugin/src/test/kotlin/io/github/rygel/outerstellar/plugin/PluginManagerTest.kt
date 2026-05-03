@@ -31,7 +31,7 @@ class PluginManagerTest {
 
     @Test
     fun `discover with no plugins returns empty`() {
-        val manager = PluginManager.create(DummyPlugin::class.java)
+        val manager = PluginManager.create(SharedPlugin::class.java)
         assertTrue(manager.discover().isEmpty())
     }
 
@@ -49,7 +49,7 @@ class PluginManagerTest {
 
     @Test
     fun `getAllPlugins returns empty after initialization with no plugins`() {
-        val manager = PluginManager.create(DummyPlugin::class.java)
+        val manager = PluginManager.create(SharedPlugin::class.java)
         manager.discoverAndInitialize()
         assertTrue(manager.getAllPlugins().isEmpty())
     }
@@ -63,7 +63,7 @@ class PluginManagerTest {
 
     @Test
     fun `withEachPlugin on empty returns empty after initialization`() {
-        val manager = PluginManager.create(DummyPlugin::class.java)
+        val manager = PluginManager.create(SharedPlugin::class.java)
         manager.discoverAndInitialize()
         assertTrue(manager.withEachPlugin { it.name }.isEmpty())
     }
@@ -99,7 +99,7 @@ class PluginManagerTest {
 
     @Test
     fun `shutdownPlugin on nonexistent is safe`() {
-        val manager = PluginManager.create(DummyPlugin::class.java)
+        val manager = PluginManager.create(SharedPlugin::class.java)
         manager.discoverAndInitialize()
         manager.shutdownPlugin("nonexistent")
         assertTrue(manager.getAllPlugins().isEmpty())
@@ -114,14 +114,14 @@ class PluginManagerTest {
 
     @Test
     fun `discoverAndInitialize returns PluginLoadResults`() {
-        val manager = PluginManager.create(DummyPlugin::class.java)
+        val manager = PluginManager.create(SharedPlugin::class.java)
         val results = manager.discoverAndInitialize()
         assertTrue(results.isEmpty())
     }
 
     @Test
     fun `discoverAndInitialize with strict mode on empty is safe`() {
-        val manager = PluginManager.create(DummyPlugin::class.java)
+        val manager = PluginManager.create(SharedPlugin::class.java)
         val results = manager.discoverAndInitialize(strict = true)
         assertTrue(results.isEmpty())
         assertTrue(manager.isInitialized())
@@ -129,7 +129,7 @@ class PluginManagerTest {
 
     @Test
     fun `reload on empty is safe`() {
-        val manager = PluginManager.create(DummyPlugin::class.java)
+        val manager = PluginManager.create(SharedPlugin::class.java)
         manager.discoverAndInitialize()
         manager.reload()
         assertTrue(manager.isInitialized())
@@ -159,15 +159,99 @@ class PluginManagerTest {
     }
 
     @Test
+    fun `initialization completes when called on background thread`() {
+        val manager = PluginManager.create(DummyPlugin::class.java)
+        val latch = java.util.concurrent.CountDownLatch(1)
+        val thread = Thread {
+            manager.discoverAndInitialize()
+            latch.countDown()
+        }
+        thread.start()
+        val completed = latch.await(2, java.util.concurrent.TimeUnit.SECONDS)
+        assertTrue(completed, "Initialization did not complete within 2 seconds")
+        assertTrue(manager.isInitialized(), "Initialized flag not visible on calling thread")
+    }
+
+    @Test
     fun `PluginInitializationException contains plugin name`() {
         val cause = RuntimeException("boom")
         val exception = PluginInitializationException("my-plugin", cause)
         assertTrue(exception.message!!.contains("my-plugin"))
         assertEquals(cause, exception.cause)
     }
+
+    @Test
+    fun `discoverAndInitialize with discovered plugin initializes it`() {
+        val manager = PluginManager.create(ServerPlugin::class.java)
+        val results = manager.discoverAndInitialize()
+        assertEquals(1, results.size)
+        assertTrue(results[0].success)
+        assertNull(results[0].error)
+        assertEquals("dummy", manager.getPlugin("dummy")!!.name)
+        assertTrue(manager.isInitialized())
+        val plugin = results[0].plugin as DummyPlugin
+        assertTrue(plugin.initialized)
+    }
+
+    @Test
+    fun `discoverAndInitialize with failing plugin in lenient mode records failure`() {
+        val manager = PluginManager.create(DesktopPlugin::class.java)
+        val results = manager.discoverAndInitialize(strict = false)
+        assertEquals(1, results.size)
+        assertFalse(results[0].success)
+        assertNotNull(results[0].error)
+        assertTrue(manager.getAllPlugins().isEmpty())
+    }
+
+    @Test
+    fun `discoverAndInitialize with failing plugin in strict mode throws`() {
+        val manager = PluginManager.create(DesktopPlugin::class.java)
+        assertThrows(PluginInitializationException::class.java) {
+            manager.discoverAndInitialize(strict = true)
+        }
+    }
+
+    @Test
+    fun `shutdownAll shuts down loaded plugins`() {
+        val manager = PluginManager.create(ServerPlugin::class.java)
+        manager.discoverAndInitialize()
+        assertNotNull(manager.getPlugin("dummy"))
+        val plugin = manager.getPlugin("dummy") as DummyPlugin
+        manager.shutdownAll()
+        assertTrue(plugin.shutdown)
+        assertTrue(manager.getAllPlugins().isEmpty())
+        assertNull(manager.getPlugin("dummy"))
+    }
+
+    @Test
+    fun `shutdownPlugin shuts down named plugin`() {
+        val manager = PluginManager.create(ServerPlugin::class.java)
+        manager.discoverAndInitialize()
+        assertNotNull(manager.getPlugin("dummy"))
+        val plugin = manager.getPlugin("dummy") as DummyPlugin
+        manager.shutdownPlugin("dummy")
+        assertTrue(plugin.shutdown)
+        assertNull(manager.getPlugin("dummy"))
+    }
+
+    @Test
+    fun `withPlugin returns result for existing plugin`() {
+        val manager = PluginManager.create(ServerPlugin::class.java)
+        manager.discoverAndInitialize()
+        val result = manager.withPlugin("dummy") { it.name }
+        assertEquals("dummy", result)
+    }
+
+    @Test
+    fun `withEachPlugin returns results for all plugins`() {
+        val manager = PluginManager.create(ServerPlugin::class.java)
+        manager.discoverAndInitialize()
+        val names = manager.withEachPlugin { it.name }
+        assertEquals(listOf("dummy"), names)
+    }
 }
 
-class DummyPlugin : Plugin {
+class DummyPlugin : ServerPlugin {
     override val name = "dummy"
     override val version = "1.0.0"
     override val description = "Dummy plugin for testing"
@@ -177,4 +261,13 @@ class DummyPlugin : Plugin {
 
     override fun initialize() { initialized = true }
     override fun shutdown() { shutdown = true }
+}
+
+class FailingPlugin : DesktopPlugin {
+    override val name = "failing"
+    override val version = "1.0.0"
+    override val description = "Plugin that always fails to initialize"
+
+    override fun initialize() { throw RuntimeException("intentional failure") }
+    override fun shutdown() {}
 }

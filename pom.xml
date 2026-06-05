@@ -50,7 +50,7 @@
         <outerstellar.version>${revision}</outerstellar.version>
         <kotlin.version>2.0.21</kotlin.version>
         <jackson.version>2.21.3</jackson.version>
-        <jackson.annotations.version>2.21</jackson.annotations.version>
+        <jackson.annotations.version>2.22</jackson.annotations.version>
         <junit.version>6.1.0</junit.version>
         <slf4j.version>2.0.18</slf4j.version>
         <flatlaf.version>3.7.1</flatlaf.version>

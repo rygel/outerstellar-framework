@@ -53,7 +53,7 @@
         <jackson.annotations.version>2.21</jackson.annotations.version>
         <junit.version>6.1.0</junit.version>
         <slf4j.version>2.0.18</slf4j.version>
-        <flatlaf.version>3.7.1</flatlaf.version>
+        <flatlaf.version>3.7.2</flatlaf.version>
         <maven.compiler.release>21</maven.compiler.release>
         <maven.clean.plugin.version>3.5.0</maven.clean.plugin.version>
         <maven.install.plugin.version>3.1.4</maven.install.plugin.version>

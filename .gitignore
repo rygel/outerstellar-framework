@@ -9,3 +9,4 @@ target/
 node_modules/
 desktop/
 *.mv.db
+**/dependency-reduced-pom.xml
